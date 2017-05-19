@@ -1,0 +1,50 @@
+{
+  "name": "kuzzle-enterprise-probe-listener",
+  "version": "1.0.0",
+  "description": "Kuzzle Enterprise plugin: statistical data probe listener",
+  "main": "./lib/index.js",
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/kuzzleio/kuzzle-enterprise-probe-listener.git"
+  },
+  "scripts": {
+    "unit-testing": "istanbul cover _mocha",
+    "test": "npm run --silent lint && npm run unit-testing --coverage",
+    "lint": "eslint --max-warnings=0 ./lib ./test"
+  },
+  "keywords": [
+    "kuzzle",
+    "enterprise",
+    "plugin",
+    "worker",
+    "probe",
+    "listener"
+  ],
+  "author": {
+    "name": "Kuzzle Team"
+  },
+  "bugs": {
+    "url": "https://github.com/kuzzleio/kuzzle-enterprise-probe-listener/issues"
+  },
+  "license": "SEE LICENSE IN LICENSE",
+  "dependencies": {
+    "bluebird": "^3.5.0"
+  },
+  "devDependencies": {
+    "eslint": "^2.9.0",
+    "istanbul": "^0.4.3",
+    "mocha": "^2.4.5",
+    "should": "^8.3.1",
+    "sinon": "^1.17.4"
+  },
+  "maintainers": [
+    {
+      "name": "kuzzle",
+      "email": "support@kuzzle.io"
+    }
+  ],
+  "engines": {
+    "node": ">= 4.3.1",
+    "npm": ">= 2.14.4"
+  }
+}
