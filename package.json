@@ -30,8 +30,7 @@
   "dependencies": {
     "bluebird": "^3.5.0",
     "kuzzle-sdk": "^3.2.0",
-    "lodash": "^4.17.4",
-    "ms": "^2.0.0"
+    "lodash": "^4.17.4"
   },
   "devDependencies": {
     "eslint": "^2.9.0",
