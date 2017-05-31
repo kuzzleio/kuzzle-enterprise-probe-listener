@@ -38,10 +38,9 @@ After a fresh installation, the plugin configuration looks like this:
 
 ```json
 {
- "threads": 1,
- "loadedBy": "server",
- "kdcAddress": "kdc:7512",
- "probes": {}
+  "threads": 1,
+  "kdcAddress": "kdc",
+  "probes": {}
 }
 ```
 
