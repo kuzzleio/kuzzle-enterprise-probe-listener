@@ -38,8 +38,7 @@ After a fresh installation, the plugin configuration looks like this:
 
 ```json
 {
-  "threads": 1,
-  "kdcAddress": "kdc",
+  "kdcAddress": "kdc-proxy",
   "probes": {}
 }
 ```
