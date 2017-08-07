@@ -9,7 +9,6 @@ describe('# Testing index file', () => {
   let
     sandbox,
     listener,
-    fakeHost = 'fake-host',
     emptyConfig = {
       probes: {}
     },
