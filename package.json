@@ -28,8 +28,10 @@
   },
   "license": "SEE LICENSE IN LICENSE",
   "dependencies": {
+    "axios": "^0.16.2",
     "bluebird": "^3.5.0",
-    "kuzzle-sdk": "^3.2.0",
+    "debug": "^3.0.1",
+    "kuzzle-sdk": "^5.0.7",
     "lodash": "^4.17.4"
   },
   "devDependencies": {
