@@ -28,7 +28,6 @@
   },
   "license": "SEE LICENSE IN LICENSE",
   "dependencies": {
-    "axios": "^0.16.2",
     "bluebird": "^3.5.0",
     "debug": "^3.0.1",
     "kuzzle-sdk": "^5.0.7",
