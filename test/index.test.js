@@ -24,6 +24,7 @@ const
   should = require('should'),
   sinon = require('sinon'),
   rewire = require('rewire'),
+  Bluebird = require('bluebird'),
   Listener = rewire('../lib/index');
 
 describe('# Testing index file', () => {
@@ -139,14 +140,14 @@ describe('# Testing index file', () => {
   });
 
   it('should stop init if probes are empty', () => {
-    return listener.init(emptyConfig, fakeContext)
+    return Bluebird.resolve(listener.init(emptyConfig, fakeContext))
       .then(() => {
         should(listener.client).match({});
       });
   });
 
   it('should initialize probes properly if everything is well configured', () => {
-    return listener.init(allGoodProbesConfig, fakeContext)
+    return Bluebird.resolve(listener.init(allGoodProbesConfig, fakeContext))
       .then(() => {
         should(Object.keys(listener.probes)).be.length(5);
         should(Object.keys(listener.hooks)).be.length(6);
@@ -160,7 +161,7 @@ describe('# Testing index file', () => {
   });
 
   it('should not initialize probes if probes are not configured properly', () => {
-    return listener.init(allBadProbesConfig, fakeContext)
+    return Bluebird.resolve(listener.init(allBadProbesConfig, fakeContext))
       .then(() => {
         should(listener.client).match({});
         should(Object.keys(listener.probes)).be.length(0);
@@ -170,7 +171,7 @@ describe('# Testing index file', () => {
   });
 
   it('should send a request without payload for monitor', () => {
-    return listener.init(allGoodProbesConfig, fakeContext)
+    return Bluebird.resolve(listener.init(allGoodProbesConfig, fakeContext))
       .then(() => {
         listener.client = kuzzleMock;
         listener.monitor({}, 'some:event');
@@ -189,7 +190,7 @@ describe('# Testing index file', () => {
   });
 
   it('should send a request without payload for counter', () => {
-    return listener.init(allGoodProbesConfig, fakeContext)
+    return Bluebird.resolve(listener.init(allGoodProbesConfig, fakeContext))
       .then(() => {
         listener.client = kuzzleMock;
         listener.counter({}, 'some:event');
@@ -214,7 +215,7 @@ describe('# Testing index file', () => {
       }
     });
 
-    return listener.init(allGoodProbesConfig, fakeContext)
+    return Bluebird.resolve(listener.init(allGoodProbesConfig, fakeContext))
       .then(() => {
         listener.client = kuzzleMock;
         listener.watcher(request, 'some:event');
@@ -242,7 +243,7 @@ describe('# Testing index file', () => {
       }
     });
 
-    return listener.init(allGoodProbesConfig, fakeContext)
+    return Bluebird.resolve(listener.init(allGoodProbesConfig, fakeContext))
       .then(() => {
         listener.client = kuzzleMock;
         listener.sampler(request, 'some:event');
