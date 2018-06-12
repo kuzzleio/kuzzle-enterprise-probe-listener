@@ -24,12 +24,10 @@ const
   should = require('should'),
   sinon = require('sinon'),
   rewire = require('rewire'),
-  Listener = rewire('../lib/index'),
-  Request = require('kuzzle-common-objects').Request;
+  Listener = rewire('../lib/index');
 
 describe('# Testing index file', () => {
   let
-    sandbox,
     listener,
     emptyConfig = {
       probes: {}
@@ -114,17 +112,21 @@ describe('# Testing index file', () => {
     },
     fakeContext = {},
     errorSpy,
+    Request,
     kuzzleMock;
 
-  before(() => {
-    sandbox = sinon.sandbox.create();
-  });
-
   beforeEach(() => {
-    sandbox.reset();
-    errorSpy = sandbox.spy((...args) => console.error(args));
+    sinon.reset();
+
+    Request = function(payload) {
+      return {
+        serialize: () => JSON.stringify(payload)
+      };
+    };
+
+    errorSpy = sinon.spy((...args) => console.error(args));
     kuzzleMock = {
-      query: sandbox.spy()
+      query: sinon.spy()
     };
 
     Listener.__set__({
@@ -147,7 +149,8 @@ describe('# Testing index file', () => {
     return listener.init(allGoodProbesConfig, fakeContext)
       .then(() => {
         should(Object.keys(listener.probes)).be.length(5);
-        should(Object.keys(listener.hooks)).be.length(5);
+        should(Object.keys(listener.hooks)).be.length(6);
+        listener.hooks.should.have.property('core:kuzzleStart');
         listener.hooks.should.have.property('some:event');
         listener.hooks.should.have.property('some:otherEvent');
         listener.hooks.should.have.property('realtime:beforePublish');
