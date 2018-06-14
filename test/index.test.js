@@ -174,7 +174,7 @@ describe('# Testing index file', () => {
 
         should(kuzzleMock.query.callCount).be.eql(1);
         should(kuzzleMock.query.args[0][0]).be.eql({
-          controller: 'kuzzle-enterprise-probe/measure',
+          controller: 'kuzzle-plugin-probe/measure',
           action: 'monitor'
         });
         should(kuzzleMock.query.args[0][1]).match({
@@ -193,7 +193,7 @@ describe('# Testing index file', () => {
 
         should(kuzzleMock.query.callCount).be.eql(1);
         should(kuzzleMock.query.args[0][0]).be.eql({
-          controller: 'kuzzle-enterprise-probe/measure',
+          controller: 'kuzzle-plugin-probe/measure',
           action: 'counter'
         });
         should(kuzzleMock.query.args[0][1]).match({
@@ -219,7 +219,7 @@ describe('# Testing index file', () => {
         should(kuzzleMock.query.callCount).be.eql(1);
 
         should(kuzzleMock.query.args[0][0]).be.eql({
-          controller: 'kuzzle-enterprise-probe/measure',
+          controller: 'kuzzle-plugin-probe/measure',
           action: 'watcher'
         });
 
@@ -247,7 +247,7 @@ describe('# Testing index file', () => {
         should(kuzzleMock.query.callCount).be.eql(1);
 
         should(kuzzleMock.query.args[0][0]).be.eql({
-          controller: 'kuzzle-enterprise-probe/measure',
+          controller: 'kuzzle-plugin-probe/measure',
           action: 'sampler'
         });
 

@@ -22,7 +22,7 @@
 
 # About
 
-Plugin allowing to add probes, collecting data and events to calculate data metrics and send them to KDC (Kuzzle Data Collector). This plugin must be used in conjonction with a KDC instance where the plugin **kuzzle-enterprise-probe** is installed. Refer to the [kuzzle-enterprise-probe documentation](https://github.com/kuzzleio/kuzzle-enterprise-probe) for more information.
+Plugin allowing to add probes, collecting data and events to calculate data metrics and send them to KDC (Kuzzle Data Collector). This plugin must be used in conjonction with a KDC instance where the plugin **kuzzle-plugin-probe** is installed. Refer to the [kuzzle-plugin-probe documentation](https://github.com/kuzzleio/kuzzle-plugin-probe) for more information.
 
 
 # Plugin configuration
@@ -50,7 +50,7 @@ After a fresh installation, the plugin configuration looks like this:
 
 ### Description
 
-Please refer to the documentation of the [plugin-entreprise-probe](https://github.com/kuzzleio/kuzzle-enterprise-probe#description) for more information about the `monitor` probe.
+Please refer to the documentation of the [plugin-plugin-probe](https://github.com/kuzzleio/kuzzle-plugin-probe#description) for more information about the `monitor` probe.
 
 ### Configuration
 
@@ -72,7 +72,7 @@ Probe configuration example:
 
 ### Description
 
-Please refer to the documentation of the [plugin-entreprise-probe](https://github.com/kuzzleio/kuzzle-enterprise-probe#description-1) for more information about the `counter` probe.
+Please refer to the documentation of the [plugin-plugin-probe](https://github.com/kuzzleio/kuzzle-plugin-probe#description-1) for more information about the `counter` probe.
 
 ### Configuration
 
@@ -95,7 +95,7 @@ Probe configuration example:
 
 ### Description
 
-Please refer to the documentation of the [plugin-entreprise-probe](https://github.com/kuzzleio/kuzzle-enterprise-probe#description-2) for more information about the `watcher` probe.
+Please refer to the documentation of the [plugin-plugin-probe](https://github.com/kuzzleio/kuzzle-plugin-probe#description-2) for more information about the `watcher` probe.
 
 ### Configuration
 
@@ -117,7 +117,7 @@ Probe configuration example:
 
 ### Description
 
-Please refer to the documentation of the [plugin-entreprise-probe](https://github.com/kuzzleio/kuzzle-enterprise-probe#description-3) for more information about the `sampler` probe.
+Please refer to the documentation of the [plugin-plugin-probe](https://github.com/kuzzleio/kuzzle-plugin-probe#description-3) for more information about the `sampler` probe.
 
 ### Configuration
 

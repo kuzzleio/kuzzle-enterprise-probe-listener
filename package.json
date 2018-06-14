@@ -1,11 +1,11 @@
 {
-  "name": "kuzzle-enterprise-probe-listener",
+  "name": "kuzzle-plugin-probe-listener",
   "version": "1.0.0",
-  "description": "Kuzzle Enterprise plugin: statistical data probe listener",
+  "description": "Kuzzle plugin: statistical data probe listener",
   "main": "./lib/index.js",
   "repository": {
     "type": "git",
-    "url": "git+https://github.com/kuzzleio/kuzzle-enterprise-probe-listener.git"
+    "url": "git+https://github.com/kuzzleio/kuzzle-plugin-probe-listener.git"
   },
   "scripts": {
     "unit-testing": "istanbul cover _mocha",
@@ -14,7 +14,6 @@
   },
   "keywords": [
     "kuzzle",
-    "enterprise",
     "plugin",
     "worker",
     "probe",
@@ -24,7 +23,7 @@
     "name": "Kuzzle Team"
   },
   "bugs": {
-    "url": "https://github.com/kuzzleio/kuzzle-enterprise-probe-listener/issues"
+    "url": "https://github.com/kuzzleio/kuzzle-plugin-probe-listener/issues"
   },
   "license": "Apache-2.0",
   "dependencies": {
