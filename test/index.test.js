@@ -23,13 +23,10 @@
 const
   should = require('should'),
   sinon = require('sinon'),
-  rewire = require('rewire'),
-  Listener = rewire('../lib/index'),
-  Request = require('kuzzle-common-objects').Request;
+  Listener = require('../lib/index');
 
 describe('# Testing index file', () => {
   let
-    sandbox,
     listener,
     emptyConfig = {
       probes: {}
@@ -39,22 +36,6 @@ describe('# Testing index file', () => {
       increasers: ['some:event'],
       decreasers: ['some:otherEvent']
     },
-    bad_counter_probe = {
-      type: 'counter'
-    },
-    bad_increaser_counter_probe = {
-      type: 'counter',
-      increasers: 'not an array'
-    },
-    bad_decreaser_counter_probe = {
-      type: 'counter',
-      decreasers: 'not an array'
-    },
-    bad_same_event_counter_probe = {
-      type: 'counter',
-      increasers: ['same:event'],
-      decreasers: ['same:event']
-    },
     good_monitor_probe = {
       type: 'monitor',
       hooks: ['some:event', 'realtime:beforePublish']
@@ -63,32 +44,15 @@ describe('# Testing index file', () => {
       type: 'monitor',
       hooks: ['some:event', 'realtime:beforePublish']
     },
-    bad_monitor_probe = {
-      type: 'monitor'
-    },
     good_watcher_probe = {
       type: 'watcher',
       index: 'some_index',
       collection: 'some_collection'
     },
-    bad_watcher_probe = {
-      type: 'watcher',
-      index: 'some_index'
-    },
     good_sampler_probe = {
       type: 'sampler',
       index: 'some_index',
       collection: 'some_collection'
-    },
-    bad_sampler_probe = {
-      type: 'sampler',
-      index: 'some_index'
-    },
-    unknown_probe = {
-      type: 'unknown'
-    },
-    not_a_probe = {
-      something: 'else'
     },
     allGoodProbesConfig = {
       probes: {
@@ -99,55 +63,39 @@ describe('# Testing index file', () => {
         good_watcher_probe
       }
     },
-    allBadProbesConfig = {
-      probes: {
-        bad_counter_probe,
-        bad_increaser_counter_probe,
-        bad_decreaser_counter_probe,
-        bad_same_event_counter_probe,
-        bad_monitor_probe,
-        bad_sampler_probe,
-        bad_watcher_probe,
-        unknown_probe,
-        not_a_probe
-      }
-    },
     fakeContext = {},
-    errorSpy,
+    Request,
     kuzzleMock;
 
-  before(() => {
-    sandbox = sinon.sandbox.create();
-  });
-
   beforeEach(() => {
-    sandbox.reset();
-    errorSpy = sandbox.spy((...args) => console.error(args));
-    kuzzleMock = {
-      query: sandbox.spy()
+    sinon.reset();
+
+    Request = function(payload) {
+      return {
+        serialize: () => JSON.stringify(payload)
+      };
     };
 
-    Listener.__set__({
-      console: {
-        error: errorSpy
-      }
-    });
+    kuzzleMock = {
+      query: sinon.spy()
+    };
 
     listener = new Listener();
   });
 
   it('should stop init if probes are empty', () => {
-    return listener.init(emptyConfig, fakeContext)
+    return Promise.resolve(listener.init(emptyConfig, fakeContext))
       .then(() => {
         should(listener.client).match({});
       });
   });
 
   it('should initialize probes properly if everything is well configured', () => {
-    return listener.init(allGoodProbesConfig, fakeContext)
+    return Promise.resolve(listener.init(allGoodProbesConfig, fakeContext))
       .then(() => {
         should(Object.keys(listener.probes)).be.length(5);
-        should(Object.keys(listener.hooks)).be.length(5);
+        should(Object.keys(listener.hooks)).be.length(6);
+        listener.hooks.should.have.property('core:kuzzleStart');
         listener.hooks.should.have.property('some:event');
         listener.hooks.should.have.property('some:otherEvent');
         listener.hooks.should.have.property('realtime:beforePublish');
@@ -156,18 +104,169 @@ describe('# Testing index file', () => {
       });
   });
 
-  it('should not initialize probes if probes are not configured properly', () => {
-    return listener.init(allBadProbesConfig, fakeContext)
-      .then(() => {
-        should(listener.client).match({});
-        should(Object.keys(listener.probes)).be.length(0);
-        should(Object.keys(listener.hooks)).be.length(0);
-        should(errorSpy.callCount).be.eql(9);
-      });
+  describe('unknown probe errors', () => {
+    it('should throw an error if "type" parameter is missing', () => {
+      const pluginConfig = {
+        probes: {
+          badProbe: {
+            something: 'else'
+          }
+        }
+      };
+
+      return should(() => listener.init(pluginConfig, fakeContext))
+        .throw('plugin-probe: [probe: badProbe] Configuration error: missing "type" parameter');
+    });
+
+    it('should throw an error if the type is not supported', () => {
+      const pluginConfig = {
+        probes: {
+          badProbe: {
+            type: 'unknown'
+          }
+        }
+      };
+
+      return should(() => listener.init(pluginConfig, fakeContext))
+        .throw('plugin-probe: [probe: badProbe] Configuration error: type "unknown" is not supported');
+    });
+  });
+
+  describe('counter probe errors', () => {
+    it('should throw an error if "increasers" and "decreseaser" parameters are missing', () => {
+      const pluginConfig = {
+        probes: {
+          badProbe: {
+            type: 'counter'
+          }
+        }
+      };
+
+      return should(() => listener.init(pluginConfig, fakeContext))
+        .throw('plugin-probe: [probe: badProbe] Configuration error: missing "increasers" or "decreasers"');
+    });
+
+    it('should throw an error if "increasers" parameter is not an array', () => {
+      const pluginConfig = {
+        probes: {
+          badProbe: {
+            type: 'counter',
+            increasers: 'not an array'
+          }
+        }
+      };
+
+      return should(() => listener.init(pluginConfig, fakeContext))
+        .throw('plugin-probe: [probe: badProbe] Configuration error: "increasers" must be an array');
+    });
+
+    it('should throw an error if "decreasers" parameter is not an array', () => {
+      const pluginConfig = {
+        probes: {
+          badProbe: {
+            type: 'counter',
+            decreasers: 'not an array'
+          }
+        }
+      };
+
+      return should(() => listener.init(pluginConfig, fakeContext))
+        .throw('plugin-probe: [probe: badProbe] Configuration error: "decreasers" must be an array');
+    });
+
+    it('should throw an error if the same event is set for increaser and decreaser', () => {
+      const pluginConfig = {
+        probes: {
+          badProbe: {
+            type: 'counter',
+            increasers: ['same:event'],
+            decreasers: ['same:event']
+          }
+        }
+      };
+
+      return should(() => listener.init(pluginConfig, fakeContext))
+        .throw('plugin-probe: [probe: badProbe] Configuration error: an event cannot be set both to increase and to decrease a counter');
+    });
+  });
+
+  describe('monitor probe errors', () => {
+    it('should throw an error if "hooks" parameter is missing', () => {
+      const pluginConfig = {
+        probes: {
+          badProbe: {
+            type: 'monitor'
+          }
+        }
+      };
+
+      return should(() => listener.init(pluginConfig, fakeContext))
+        .throw('plugin-probe: [probe: badProbe] Configuration error: missing "hooks"');
+    });
+  });
+
+  describe('watcher probe errors', () => {
+    it('should throw an error if "index" parameter is missing', () => {
+      const pluginConfig = {
+        probes: {
+          badProbe: {
+            type: 'watcher',
+            collection: 'bar'
+          }
+        }
+      };
+
+      return should(() => listener.init(pluginConfig, fakeContext))
+        .throw('plugin-probe: [probe: badProbe] Configuration error: missing "index" or "collection"');
+    });
+
+    it('should throw an error if "collection" parameter is missing', () => {
+      const pluginConfig = {
+        probes: {
+          badProbe: {
+            type: 'watcher',
+            index: 'foo'
+          }
+        }
+      };
+
+      return should(() => listener.init(pluginConfig, fakeContext))
+        .throw('plugin-probe: [probe: badProbe] Configuration error: missing "index" or "collection"');
+    });
+  });
+
+  describe('sampler probe errors', () => {
+    it('should throw an error if "index" parameter is missing', () => {
+      const pluginConfig = {
+        probes: {
+          badProbe: {
+            type: 'sampler',
+            collection: 'bar'
+          }
+        }
+      };
+
+      return should(() => listener.init(pluginConfig, fakeContext))
+        .throw('plugin-probe: [probe: badProbe] Configuration error: missing "index" or "collection"');
+    });
+
+    it('should throw an error if "collection" parameter is missing', () => {
+      const pluginConfig = {
+        probes: {
+          badProbe: {
+            type: 'sampler',
+            index: 'foo'
+          }
+        }
+      };
+
+      return should(() => listener.init(pluginConfig, fakeContext))
+        .throw('plugin-probe: [probe: badProbe] Configuration error: missing "index" or "collection"');
+    });
   });
 
   it('should send a request without payload for monitor', () => {
-    return listener.init(allGoodProbesConfig, fakeContext)
+    return Promise.resolve(listener.init(allGoodProbesConfig, fakeContext))
       .then(() => {
         listener.client = kuzzleMock;
         listener.monitor({}, 'some:event');
@@ -186,7 +285,7 @@ describe('# Testing index file', () => {
   });
 
   it('should send a request without payload for counter', () => {
-    return listener.init(allGoodProbesConfig, fakeContext)
+    return Promise.resolve(listener.init(allGoodProbesConfig, fakeContext))
       .then(() => {
         listener.client = kuzzleMock;
         listener.counter({}, 'some:event');
@@ -211,7 +310,7 @@ describe('# Testing index file', () => {
       }
     });
 
-    return listener.init(allGoodProbesConfig, fakeContext)
+    return Promise.resolve(listener.init(allGoodProbesConfig, fakeContext))
       .then(() => {
         listener.client = kuzzleMock;
         listener.watcher(request, 'some:event');
@@ -239,7 +338,7 @@ describe('# Testing index file', () => {
       }
     });
 
-    return listener.init(allGoodProbesConfig, fakeContext)
+    return Promise.resolve(listener.init(allGoodProbesConfig, fakeContext))
       .then(() => {
         listener.client = kuzzleMock;
         listener.sampler(request, 'some:event');
