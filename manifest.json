@@ -1,0 +1,5 @@
+{
+  "name": "kuzzle-plugin-probe-listener",
+  "kuzzleVersion": ">=1.0.0 <2.0.0",
+  "privileged": false
+}
