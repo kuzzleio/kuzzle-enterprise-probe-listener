@@ -1,6 +1,6 @@
 {
   "name": "kuzzle-plugin-probe-listener",
-  "version": "1.0.0",
+  "version": "1.0.1",
   "description": "Kuzzle plugin: statistical data probe listener",
   "main": "./lib/index.js",
   "repository": {
