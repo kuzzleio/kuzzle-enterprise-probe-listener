@@ -25,6 +25,8 @@ const
   sinon = require('sinon'),
   Listener = require('../lib/index');
 
+require('should-sinon');
+
 describe('# Testing index file', () => {
   let
     listener,
@@ -77,7 +79,7 @@ describe('# Testing index file', () => {
     };
 
     kuzzleMock = {
-      query: sinon.spy()
+      query: sinon.stub().resolves()
     };
 
     listener = new Listener();
@@ -271,16 +273,15 @@ describe('# Testing index file', () => {
         listener.client = kuzzleMock;
         listener.monitor({}, 'some:event');
 
-        should(kuzzleMock.query.callCount).be.eql(1);
-        should(kuzzleMock.query.args[0][0]).be.eql({
-          controller: 'kuzzle-plugin-probe/measure',
-          action: 'monitor'
-        });
-        should(kuzzleMock.query.args[0][1]).match({
-          body: {
-            event: 'some:event'
-          }
-        });
+        should(kuzzleMock.query)
+          .be.calledOnce()
+          .be.calledWith({
+            controller: 'kuzzle-plugin-probe/measure',
+            action: 'monitor',
+            body: {
+              event: 'some:event'
+            }
+          });
       });
   });
 
@@ -290,16 +291,15 @@ describe('# Testing index file', () => {
         listener.client = kuzzleMock;
         listener.counter({}, 'some:event');
 
-        should(kuzzleMock.query.callCount).be.eql(1);
-        should(kuzzleMock.query.args[0][0]).be.eql({
-          controller: 'kuzzle-plugin-probe/measure',
-          action: 'counter'
-        });
-        should(kuzzleMock.query.args[0][1]).match({
-          body: {
-            event: 'some:event'
-          }
-        });
+        should(kuzzleMock.query)
+          .be.calledOnce()
+          .be.calledWith({
+            controller: 'kuzzle-plugin-probe/measure',
+            action: 'counter',
+            body: {
+              event: 'some:event'
+            }
+          });
       });
   });
 
@@ -315,19 +315,16 @@ describe('# Testing index file', () => {
         listener.client = kuzzleMock;
         listener.watcher(request, 'some:event');
 
-        should(kuzzleMock.query.callCount).be.eql(1);
-
-        should(kuzzleMock.query.args[0][0]).be.eql({
-          controller: 'kuzzle-plugin-probe/measure',
-          action: 'watcher'
-        });
-
-        should(kuzzleMock.query.args[0][1]).match({
-          body: {
-            event: 'some:event',
-            payload: request.serialize()
-          }
-        });
+        should(kuzzleMock.query)
+          .be.calledOnce()
+          .be.calledWith({
+            controller: 'kuzzle-plugin-probe/measure',
+            action: 'watcher',
+            body: {
+              event: 'some:event',
+              payload: request.serialize()
+            }
+          });
       });
   });
 
@@ -343,19 +340,16 @@ describe('# Testing index file', () => {
         listener.client = kuzzleMock;
         listener.sampler(request, 'some:event');
 
-        should(kuzzleMock.query.callCount).be.eql(1);
-
-        should(kuzzleMock.query.args[0][0]).be.eql({
-          controller: 'kuzzle-plugin-probe/measure',
-          action: 'sampler'
-        });
-
-        should(kuzzleMock.query.args[0][1]).match({
-          body: {
-            event: 'some:event',
-            payload: request.serialize()
-          }
-        });
+        should(kuzzleMock.query)
+          .be.calledOnce()
+          .be.calledWith({
+            controller: 'kuzzle-plugin-probe/measure',
+            action: 'sampler',
+            body: {
+              event: 'some:event',
+              payload: request.serialize()
+            }
+          });
       });
   });
 });
